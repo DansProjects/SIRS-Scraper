@@ -1,0 +1,5 @@
+[cas-config]
+netid:
+password:
+cas_login_url: https://cas.rutgers.edu/login
+app_login_url: https://sirs.ctaar.rutgers.edu/index.php
