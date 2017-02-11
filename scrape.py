@@ -1,6 +1,6 @@
 import configparser
 
-from Cas import Cas
+from cas import Cas
 
 cp = configparser.RawConfigParser()
 configFilePath = 'config.txt'
@@ -15,5 +15,5 @@ cas = Cas(netid, password, cas_login_url, app_login_url)
 
 result = cas.cas_login()
 
-#with open("Output.txt", "w") as text_file:
+#with open("Output.html", "w") as text_file:
 #    text_file.write(result)
