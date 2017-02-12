@@ -1,7 +1,33 @@
 import configparser
 import json
+import os
+import errno
+import time
+from random import randint
+from time import sleep
 
 from sirsScrape import sirsScrape
+
+def archive(html, year, semester, school, department):
+    """Saves evaluation data onto disk"""
+
+    directory_path = "scraped/"+format(year)+"/"+format(semester)+"/"+format(school)
+
+    try:
+        os.makedirs(directory_path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
+
+    file_name = "evaluations-"+format(year)+"-"+format(semester)+"-"+format(school)+"-"+format(department)+".html"
+    file_path = directory_path+"/"+file_name
+
+    try:
+        with open(file_path, "w") as html_file:
+            html_file.write(html)
+    except IOError:
+        print("Could not write to file: ", format(file_name))
+
 
 cp = configparser.RawConfigParser()
 configFilePath = 'config.txt'
@@ -12,27 +38,50 @@ app_login_url = cp.get("cas-config", "app_login_url")
 netid = cp.get("cas-config", "netid")
 password = cp.get("cas-config", "password")
 
-years = ( 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
-          2010, 2011, 2012, 2013, 2014, 2016)
+years = ( 2014, 2015, 2016)
+
+semesters = ("Spring", "Fall")
 
 cas_session = sirsScrape(netid, password, cas_login_url, app_login_url)
 
 cas_session.cas_login()
 
-year = years[10]
-semester = "Spring"
-schools_json = cas_session.get_schools(year,semester)
-schools_json = json.loads(schools_json)
+start_time = time.time()
 
-for school in schools_json["schools"]:
-    print(school[0]+' - '+school[1])
-    departments_json = cas_session.get_departments(year, semester, school[0])
-    departments_json = json.loads(departments_json)
+for year in years:
+    print(year,end=" ")
+    for semester in semesters:
+        print(semester)
+        if (time.time() - start_time) > 3600:
+            cas_session.cas_login() #refresh session every hour
+            start_time = time.time()
 
-    for department in departments_json["depts"]:
-        print("\t Department: "+department)
+        schools_json = cas_session.get_schools(year,semester)
+        schools_json = json.loads(schools_json)
 
-    break;
+        for school in schools_json["schools"]:
+            print(school[0]+' - '+school[1])
+            #if int(school[0]) > 25:
+            departments_json = cas_session.get_departments(year, semester, school[0])
+            departments_json = json.loads(departments_json)
 
-#with open("Output.html", "w") as text_file:
-#    text_file.write(result)
+            for department in departments_json["depts"]:
+                #if int(department) > 553:
+                print("\t Department: "+department)
+                evaluations_html = cas_session.get_evaluations(year, semester, school[0], department)
+                if not evaluations_html:
+                    continue
+                else:
+                    archive(evaluations_html, year, semester, school[0], department)
+                    sleep(randint(2, 7))
+                #break
+            #break
+
+            # end department
+        # end school
+    # end semester
+#end year
+
+
+
+

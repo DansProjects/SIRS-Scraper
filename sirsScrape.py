@@ -46,6 +46,23 @@ class sirsScrape:
         else:
             return False
 
+    def get_evaluations(self, year, semester, school, department):
+
+        """Grab list of schools for given year
+            URL format: https://sirs.ctaar.rutgers.edu/index.php?survey[semester]=Spring&survey[year]=2016&survey[school]=01&survey[dept]=013&mode=course
+            Returns poorly formatted html :)
+        """
+
+        url = "{sirs_base_url}/index.php?survey[semester]={semester}&survey[year]={year}&survey[school]={school}&survey[dept]={department}&mode=course" \
+            .format(sirs_base_url=self.__sirs_base_url, semester=semester, year=year, school=school, department = department)
+        try:
+            evaluations = self.__session.get(url)
+        except:
+            print("Error in get_evaluations")
+            return False
+
+        return evaluations.text
+
     def get_schools(self, year, semester):
 
         """Grab list of schools for given year

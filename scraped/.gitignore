@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+!example-evaluations-year-semester-school-department.html
+
+# ...even if they are in subdirectories
+!*/
