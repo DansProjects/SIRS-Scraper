@@ -61,12 +61,10 @@ for year in years:
 
         for school in schools_json["schools"]:
             print(school[0]+' - '+school[1])
-            #if int(school[0]) > 25:
             departments_json = cas_session.get_departments(year, semester, school[0])
             departments_json = json.loads(departments_json)
 
             for department in departments_json["depts"]:
-                #if int(department) > 553:
                 print("\t Department: "+department)
                 evaluations_html = cas_session.get_evaluations(year, semester, school[0], department)
                 if not evaluations_html:
@@ -74,8 +72,6 @@ for year in years:
                 else:
                     archive(evaluations_html, year, semester, school[0], department)
                     sleep(randint(2, 7))
-                #break
-            #break
 
             # end department
         # end school

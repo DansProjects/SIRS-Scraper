@@ -3,7 +3,7 @@ import xml.etree.ElementTree as et
 import re
 from bs4 import BeautifulSoup
 
-class parse:
+class sirsParse:
 
     def get_html(self, data):
         """Returns list of tables, each representing one evaluation"""
