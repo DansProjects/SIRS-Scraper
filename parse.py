@@ -1,6 +1,7 @@
 from lxml import html
 import xml.etree.ElementTree as et
 import re
+from bs4 import BeautifulSoup
 
 class parse:
 
@@ -114,3 +115,18 @@ class parse:
             print("Failed at get_num_responses")
             return False
 
+    def get_eval_rows(self, table):
+        """Retrieves questions and its response (row) given an evaluation"""
+
+        try:
+            table_text = et.tostring(table).decode('utf-8')
+            soup = BeautifulSoup(table_text, 'html.parser')
+
+            questions = soup.find_all(text=re.compile(r'[\d+][.][\s]'))
+            print(questions)
+            eval_data = questions[0].parent.parent
+            print(eval_data)
+
+        except IndexError:
+            print("Failed at get_num_responses")
+        return False

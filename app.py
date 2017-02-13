@@ -19,5 +19,7 @@ for evaluation in evaluations:
     course_code = parse.get_course_code(row)
     enrollments = parse.get_num_enrollments(row)
     responses = parse.get_num_responses(row)
+    evals = parse.get_eval_rows(evaluation)
 
     print(course_name+"-"+instructor)
+    break
