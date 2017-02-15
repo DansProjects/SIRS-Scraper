@@ -123,10 +123,16 @@ class sirsParse:
             soup = BeautifulSoup(table_text, 'html.parser')
 
             questions = soup.find_all(text=re.compile(r'[\d+][.][\s]'))
-            print(questions)
             eval_data = questions[0].parent.parent
-            print(eval_data)
+            question_text = eval_data.find_all('td', {'class':"qText"})
+            question_text = question_text[0].contents[0]
+
+            response_text = soup.find_all('td', {'class':"mono"})
+            print(response_text)
+
+            print(question_text)
+            #print(eval_data)
 
         except IndexError:
             print("Failed at get_num_responses")
-        return False
+            return False
