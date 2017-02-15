@@ -1,7 +1,8 @@
 from sirsParse import sirsParse
 import xml.etree.ElementTree as et
+import json
 
-file = open("Output.html", "r")
+file = open("scraped/example-evaluations-year-semester-school-department.html", "r")
 data = file.read()
 
 parser = sirsParse()
@@ -21,5 +22,9 @@ for evaluation in evaluations:
     responses = parser.get_num_responses(row)
     evals = parser.get_eval_rows(evaluation)
 
+    evals_json = json.dumps(evals)
+    evals_json = json.loads(evals_json)
+
     print(course_name+"-"+instructor)
+    print(json.dumps(evals_json, indent=4, sort_keys=True))
     break

@@ -118,20 +118,44 @@ class sirsParse:
     def get_eval_rows(self, table):
         """Retrieves questions and its response (row) given an evaluation"""
 
+        evaluation_data = {}
+
         try:
             table_text = et.tostring(table).decode('utf-8')
             soup = BeautifulSoup(table_text, 'html.parser')
+            tbody_text = soup.find_all('tbody') # first tbody is standard university questions
+                                                # second tbody, if exists, are instructor / dept added
 
-            questions = soup.find_all(text=re.compile(r'[\d+][.][\s]'))
-            eval_data = questions[0].parent.parent
-            question_text = eval_data.find_all('td', {'class':"qText"})
-            question_text = question_text[0].contents[0]
+            for i, tbody in enumerate(tbody_text):
 
-            response_text = soup.find_all('td', {'class':"mono"})
-            print(response_text)
+                questions = tbody.find_all(text=re.compile(r'[\d+][.][\s]'))
 
-            print(question_text)
-            #print(eval_data)
+                for ind, question in enumerate(questions):
+
+                    eval_data = question.parent.parent
+                    question_text = eval_data.find_all('td', {'class':"qText"})
+                    question_text = question_text[0].contents[0]
+
+                    question_data = {}
+                    question_data["question_text"] = question_text
+
+                    if i == 0:
+                        evaluation_data["question_type"] = "university"
+                    else:
+                        evaluation_data["question_type"] = "instructor"
+
+                    response_data = {}
+
+                    response_text = eval_data.find_all('td', {'class':['mono']})
+                    for indx, response in enumerate(response_text):
+                        response_data[indx] = response.text
+                        if indx == 5:
+                            break #not interested in averages, which are after 6th data point
+
+                    question_data["response"] = response_data
+                    evaluation_data[ind] = question_data
+
+                return evaluation_data
 
         except IndexError:
             print("Failed at get_num_responses")
