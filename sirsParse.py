@@ -20,7 +20,7 @@ class sirsParse:
             source_string = (et.tostring(table.xpath('.//caption')[0])).decode('utf-8')
             source = re.findall(r'\(([^()]+)\)', source_string)
 
-            return source
+            return source[0]
 
         except IndexError:
             print("Failed at get_data_source")
@@ -140,9 +140,9 @@ class sirsParse:
                     question_data["question_text"] = question_text
 
                     if i == 0:
-                        evaluation_data["question_type"] = "university"
+                        question_data["question_type"] = "university"
                     else:
-                        evaluation_data["question_type"] = "instructor"
+                        question_data["question_type"] = "instructor"
 
                     response_data = {}
 

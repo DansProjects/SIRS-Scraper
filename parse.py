@@ -9,22 +9,25 @@ parser = sirsParse()
 evaluations = parser.get_html(data)
 
 for evaluation in evaluations:
+
+    evaluation_data = {}
+
     # course info located in first row, first td
     row = evaluation.xpath('.//tr/td')[0]
 
-    source = parser.get_data_source(evaluation)
-    instructor = parser.get_instructor_name(row)
-    course_name = parser.get_course_name(row)
-    semester = parser.get_semester(row)
-    reg_index = parser.get_reg_index(row)
-    course_code = parser.get_course_code(row)
-    enrollments = parser.get_num_enrollments(row)
-    responses = parser.get_num_responses(row)
+    evaluation_data["source"] = parser.get_data_source(evaluation)
+    evaluation_data["instructor"] = parser.get_instructor_name(row)
+    evaluation_data["course_name"] = parser.get_course_name(row)
+    evaluation_data["semester"] = parser.get_semester(row)
+    evaluation_data["reg_index"] = parser.get_reg_index(row)
+    evaluation_data["course_code"] = parser.get_course_code(row)
+    evaluation_data["enrollments"] = parser.get_num_enrollments(row)
+    evaluation_data["responses"] = parser.get_num_responses(row)
     evals = parser.get_eval_rows(evaluation)
 
-    evals_json = json.dumps(evals)
+    evaluation_data["questions"] = evals
+    evals_json = json.dumps(evaluation_data)
     evals_json = json.loads(evals_json)
 
-    print(course_name+"-"+instructor)
     print(json.dumps(evals_json, indent=4, sort_keys=True))
-    break
+    #break
