@@ -49,7 +49,7 @@ class sirsParse:
             print("Failed at get_course_name")
             return False
 
-    def get_semester(self, row):
+    def get_full_semester(self, row):
         """Returns semester of course, located in first row of table """
 
         try:
@@ -68,8 +68,8 @@ class sirsParse:
         try:
             row_text = et.tostring(row).decode('utf-8')
             search = re.findall(r'index\s#[\d]*', row_text)
-
-            return search[0]
+            search = re.sub('[^0-9]', '', search[0])
+            return search
 
         except IndexError:
             print("Failed at get_reg_index")
@@ -115,6 +115,69 @@ class sirsParse:
             print("Failed at get_num_responses")
             return False
 
+    def get_year(self, semester):
+        """Returns the year from the semester string ex: Spring 2017"""
+
+        try:
+            year = re.findall(r'[\d]+', semester)
+
+            return year[0]
+
+        except IndexError:
+            print("Failed at get_year")
+            return False
+
+    def get_semester(self, semester):
+        """Returns the semester (Spring) from the semester string ex: Spring 2017"""
+
+        try:
+            semester = re.findall(r'[A-z]+', semester)
+
+            return semester[0]
+
+        except IndexError:
+            print("Failed at get_semester")
+            return False
+
+    def get_school(self,course_code):
+        """Return the school id from course code"""
+        course_code = course_code.split(':')
+        try:
+            return course_code[0]  # school id are the numbers before first :
+
+        except IndexError:
+            print("Failed at get_school")
+            return False
+
+    def get_department(self,course_code):
+        """Return the department id from course code"""
+        course_code = course_code.split(':')
+        try:
+            return course_code[1]  # school id are the numbers before second :
+        except IndexError:
+            print("Failed at get_department")
+            return False
+
+    def get_course(self,course_code):
+        """Return the course id from course code"""
+        course_code = course_code.split(':')
+        try:
+            return course_code[2]  # course id are the numbers before third :
+
+        except IndexError:
+            print("Failed at get_course")
+            return False
+
+    def get_section(self,course_code):
+        """Return the secion id from course code"""
+        course_code = course_code.split(':')
+        try:
+            return course_code[3]  # section id are the numbers after third :
+
+        except IndexError:
+            print("Failed at get_section")
+            return False
+
     def get_eval_rows(self, table):
         """Retrieves questions and its response (row) given an evaluation"""
 
@@ -135,6 +198,8 @@ class sirsParse:
                     eval_data = question.parent.parent
                     question_text = eval_data.find_all('td', {'class':"qText"})
                     question_text = question_text[0].contents[0]
+                    question_text = re.sub(r'\d+[\.]', '', question_text)
+                    question_text = question_text.strip()
 
                     question_data = {}
                     question_data["question_text"] = question_text
