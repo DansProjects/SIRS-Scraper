@@ -47,6 +47,14 @@ class Answer(Base):
     created_at = Column(String(250))
     updated_at = Column(String(250))
 
+class DataSource(Base):
+    __tablename__ = "data_source"
+    id = Column(Integer, primary_key=True)
+    file_name = Column(String(250))
+    status = Column(String(250))
+    created_at = Column(String(250))
+    updated_at = Column(String(250))
+
 class Database():
 
     def connect(self):
