@@ -220,7 +220,7 @@ class sirsParse:
                     question_data["response"] = response_data
                     evaluation_data[ind] = question_data
 
-                return evaluation_data
+            return evaluation_data
 
         except IndexError:
             print("Failed at get_num_responses")
