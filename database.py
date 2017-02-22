@@ -18,6 +18,7 @@ class Course(Base):
     department = Column(Integer)
     course = Column(Integer)
     section = Column(String(25))
+    regindex = Column(String(25))
     instructor = Column(String(250))
     source = Column(String(250))
     enrollments = Column(Integer())

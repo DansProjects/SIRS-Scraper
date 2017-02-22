@@ -22,7 +22,7 @@ def add_course(sess, c):
     """Adds a given course if it does not already exist, returns -1 if it does"""
 
     instance = sess.query(Course).filter(and_(Course.year==c.year, Course.semester==c.semester, Course.school==c.school, Course.department==c.department,
-                                             Course.course==c.course, Course.section == c.section)).first()
+                                             Course.course==c.course, Course.section == c.section, Course.regindex == c.regindex)).first()
     if not instance:
         sess.add(c)
         sess.commit()
@@ -44,7 +44,7 @@ def add_answer(sess, a):
 def add_file(sess, f):
     """Adds a file answer if it does not already exist, returns -1 if does"""
 
-    instance = sess.query(DataSource).filter(DataSource.file_name ==f.file_name).first()
+    instance = sess.query(DataSource).filter_by(file_name=f.file_name).first()
     if not instance:
         sess.add(f)
         sess.commit()
@@ -98,9 +98,10 @@ def insert_data(evaluations):
         course = Course(course_name=evaluation_data["course_name"], year=evaluation_data["year"],
                         semester=evaluation_data["semester"], school=evaluation_data['school'],
                         department=evaluation_data['department'], course=evaluation_data['course'],
-                        section=evaluation_data['section'], source=evaluation_data['source'],
-                        enrollments=evaluation_data['enrollments'], responses=evaluation_data['responses'],
-                        instructor=evaluation_data["instructor"], created_at=now
+                        section=evaluation_data['section'], regindex=evaluation_data["reg_index"],
+                        source=evaluation_data['source'],enrollments=evaluation_data['enrollments'],
+                        responses=evaluation_data['responses'],instructor=evaluation_data["instructor"],
+                        created_at=now
             )
         course_session.close()
         course_id = add_course(course_session, course)
@@ -114,7 +115,6 @@ def insert_data(evaluations):
             evaluation_data["questions"] = evals
             evals_json = json.dumps(evaluation_data)
             evals_json = json.loads(evals_json)
-            #print(evals_json)
 
             for e in evals_json['questions']:
                 #print(evals_json['questions'][e])
@@ -163,7 +163,7 @@ session = sessionmaker()
 session.configure(bind=engine)
 
 parser = sirsParse()
-for root, dirs, files in os.walk("scraped/2001/Fall/01"):
+for root, dirs, files in os.walk("scraped/2001/Fall/"):
     for file in files:
         if file.endswith(".html"):
 
@@ -175,7 +175,7 @@ for root, dirs, files in os.walk("scraped/2001/Fall/01"):
             data_source = DataSource(file_name = file_path, status = "started", created_at = now)
             file_instance = add_file(file_session, data_source)
 
-            if(file_instance.status == "started"):
+            if file_instance.status == "started":
                 file = open(file_path)
                 data = file.read()
                 evaluations = parser.get_html(data)
