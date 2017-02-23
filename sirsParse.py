@@ -189,9 +189,11 @@ class sirsParse:
             tbody_text = soup.find_all('tbody') # first tbody is standard university questions
                                                 # second tbody, if exists, are instructor / dept added
 
+            question_inc = 0;
+
             for i, tbody in enumerate(tbody_text):
 
-                questions = tbody.find_all(text=re.compile(r'[\d+][.][\s]'))
+                questions = tbody.find_all(text=re.compile(r'[\d]+[.][\s]'))
 
                 for ind, question in enumerate(questions):
 
@@ -214,11 +216,12 @@ class sirsParse:
                     response_text = eval_data.find_all('td', {'class':['mono']})
                     for indx, response in enumerate(response_text):
                         response_data[indx] = response.text
-                        if indx == 6:
+                        if indx == 5:
                             break #not interested in averages, which are after 6th data point
 
                     question_data["response"] = response_data
-                    evaluation_data[ind] = question_data
+                    evaluation_data[question_inc] = question_data
+                    question_inc += 1
 
             return evaluation_data
 

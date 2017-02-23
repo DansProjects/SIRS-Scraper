@@ -113,6 +113,7 @@ def insert_data(evaluations):
                                                        evaluation_data["instructor"]))
 
             evaluation_data["questions"] = evals
+            #print("Instructor {} : {}".format(evaluation_data["instructor"], evals))
             evals_json = json.dumps(evaluation_data)
             evals_json = json.loads(evals_json)
 
@@ -122,6 +123,8 @@ def insert_data(evaluations):
                 q_type = evals_json['questions'][e]['question_type']
 
                 responses = evals_json['questions'][e]['response']
+
+
                 question_session = session()
                 question = Question(question_text=bytearray(q_text,'utf-8'), question_type=q_type, created_at=now)
                 q_id = add_question(question_session, question)
@@ -172,7 +175,7 @@ for root, dirs, files in os.walk("scraped/"):
 
             print("Parsing file: "+file_path)
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            data_source = DataSource(file_name = file_path, status = "started", created_at = now)
+            data_source = DataSource(file_name = file_path, status="started", created_at=now)
             file_instance = add_file(file_session, data_source)
 
             if file_instance.status == "started":
