@@ -214,7 +214,7 @@ class sirsParse:
                     response_text = eval_data.find_all('td', {'class':['mono']})
                     for indx, response in enumerate(response_text):
                         response_data[indx] = response.text
-                        if indx == 5:
+                        if indx == 6:
                             break #not interested in averages, which are after 6th data point
 
                     question_data["response"] = response_data

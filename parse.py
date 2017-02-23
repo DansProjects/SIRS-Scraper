@@ -163,7 +163,7 @@ session = sessionmaker()
 session.configure(bind=engine)
 
 parser = sirsParse()
-for root, dirs, files in os.walk("scraped/2001/Fall/"):
+for root, dirs, files in os.walk("scraped/"):
     for file in files:
         if file.endswith(".html"):
 
@@ -176,7 +176,7 @@ for root, dirs, files in os.walk("scraped/2001/Fall/"):
             file_instance = add_file(file_session, data_source)
 
             if file_instance.status == "started":
-                file = open(file_path)
+                file = open(file_path, encoding="ISO-8859-1")
                 data = file.read()
                 evaluations = parser.get_html(data)
                 insert_data(evaluations)
@@ -187,6 +187,5 @@ for root, dirs, files in os.walk("scraped/2001/Fall/"):
 
             file_session.close()
 
-
-#insert_data(evaluations)
+print("Finished!")
 
