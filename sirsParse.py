@@ -54,7 +54,7 @@ class sirsParse:
 
         try:
             row_text = et.tostring(row).decode('utf-8')
-            search = re.findall(r'(?:Spring|Fall|Summer) (?:[\s]*[\d]*)', row_text)
+            search = re.findall(r'(?i)(?:Spring|Fall|Summer) (?:[\s]*[\d]*)', row_text)
 
             return search[0]
 
@@ -85,7 +85,7 @@ class sirsParse:
 
             return search[0]
 
-        except IndexError:
+        except:
             print("Failed at get_course_code")
             return False
 
@@ -117,7 +117,7 @@ class sirsParse:
 
     def get_year(self, semester):
         """Returns the year from the semester string ex: Spring 2017"""
-
+        print(semester)
         try:
             year = re.findall(r'[\d]+', semester)
 
