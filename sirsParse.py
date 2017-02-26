@@ -80,8 +80,7 @@ class sirsParse:
 
         try:
             row_text = et.tostring(row).decode('utf-8')
-            #TODO currently taking first course code - need to deal with cross lists
-            search = re.findall(r'([\d]+:[\d]+:[\d]+:*.[^\s])', row_text)
+            search = re.findall(r'(\S+:.+:.+:\S+)', row_text)
 
             return search[0]
 
@@ -117,7 +116,7 @@ class sirsParse:
 
     def get_year(self, semester):
         """Returns the year from the semester string ex: Spring 2017"""
-        print(semester)
+
         try:
             year = re.findall(r'[\d]+', semester)
 
