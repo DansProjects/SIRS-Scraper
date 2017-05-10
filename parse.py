@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 import json
 import os
+from collections import OrderedDict
 
 def add_question(sess, q):
     """Adds a given question if it does not already exist, returns id of question if it does"""
@@ -124,7 +125,6 @@ def insert_data(evaluations):
 
                 responses = evals_json['questions'][e]['response']
 
-
                 question_session = session()
                 question = Question(question_text=bytearray(q_text,'utf-8'), question_type=q_type, created_at=now)
                 q_id = add_question(question_session, question)
@@ -132,8 +132,9 @@ def insert_data(evaluations):
 
                 answer_session = session()
                 rate_1,rate_2,rate_3,rate_4,rate_5,blank = 0,0,0,0,0,0
-                for indx, inc in enumerate(responses):
+                responses = OrderedDict(sorted(responses.items()))
 
+                for indx, inc in enumerate(responses):
                     if indx == 0:
                         rate_1 = responses[inc]
                     elif indx ==1:
@@ -166,7 +167,7 @@ session = sessionmaker()
 session.configure(bind=engine)
 
 parser = sirsParse()
-for root, dirs, files in os.walk("scraped/2014"):
+for root, dirs, files in os.walk("test"):
     for file in files:
         if file.endswith(".html"):
 
