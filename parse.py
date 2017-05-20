@@ -167,7 +167,7 @@ session = sessionmaker()
 session.configure(bind=engine)
 
 parser = sirsParse()
-for root, dirs, files in os.walk("test"):
+for root, dirs, files in os.walk("scraped/2003"):
     for file in files:
         if file.endswith(".html"):
 
