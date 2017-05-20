@@ -81,7 +81,8 @@ class sirsParse:
         try:
             row_text = et.tostring(row).decode('utf-8')
             search = re.findall(r'(\b([A-Za-z0-9]+:){3}[A-Za-z0-9]+\b(?=\s))', row_text)
-            if len(search[0]) > 1 :
+
+            if len(search[0]) > 1:
                 return search[0][0]
             else:
                 return search[0]
